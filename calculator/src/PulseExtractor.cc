@@ -523,7 +523,7 @@ std::vector<float> PulseExtractor::GetChannelSumProfile(int iChan)
 }
 
 
-int PulseExtractor::normToUnity(SignalContainer* scont)
+void PulseExtractor::normToUnity(SignalContainer* scont)
 {
   //  float mean=scont->GetSignalMean(0,10000000);
   float smax=-100000;

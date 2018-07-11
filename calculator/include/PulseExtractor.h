@@ -48,8 +48,8 @@ class PulseExtractor : BaseRun
   PulseExtractor(BaseRun* run); // конструктор принимает ссылку на класс сеанса
   ~PulseExtractor();
   
-  int SetBaseRun(BaseRun* br) {fBaseRun=br;} // можно задать ссылку на сеанс
-  int SetDM(float DM) {fDM=DM;} // можно утановить произвольную DM 
+  void SetBaseRun(BaseRun* br) {fBaseRun=br;} // можно задать ссылку на сеанс
+  void SetDM(float DM) {fDM=DM;} // можно утановить произвольную DM 
   
   int DoCompensation(); // функция проводит компенсацию запаздывания, время всегда приводится к самой высокой частоте 112.084, если ранее было проведено суммирование периодов для отдельных частот, исполуются свернутые профили, иначе полные профили для каждой частоты
   int SumPeriods();   // функция суммирует периоды в компенсированных данных, если суммирование было проведено ранее для каждой из частот, функция ничего не меняет, только заполняет финальный объект SumProfile
@@ -73,7 +73,7 @@ class PulseExtractor : BaseRun
   int FillMaskFRweights();  // заполняются веса частотных каналов в маске. Определяется среднее значение сигнала по всем частотам, M, вес для канала определен так: w=pow(m(f)/M, -1)
   
   int ReadMask(std::string fname); // считать маску частот
-  int SetChannelMask(std::vector<float> mask) {fChannelMask=mask;} // задать маску
+  void SetChannelMask(std::vector<float> mask) {fChannelMask=mask;} // задать маску
   std::vector<float> GetChannelMask() {return fChannelMask;} // получить маску в виде вектора
   
   int RemoveSpikes(float nVar);   // удалить шумовые импульсы, частотные каналы складываются с dm=0, выбросы > nVar*sigma заменяются на медианное значение подложки
@@ -88,7 +88,7 @@ class PulseExtractor : BaseRun
   SignalContainer fCompensatedSignalSum;
   std::vector<SignalContainer> fDynamicSpectrum;
   SumProfile fSumProfile;
-  int normToUnity(SignalContainer* h);
+  void normToUnity(SignalContainer* h);
   int compensateDM();
   int sumPeriods();
   int sumPerChannelPeriods();

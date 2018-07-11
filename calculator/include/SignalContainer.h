@@ -22,6 +22,8 @@ class SignalContainer
   
   float GetSignalError(int iBin);
   int SetSignalError(int iBin, float value);
+
+  int GetNbins() {return fNTimeBins;}
   
  private:
   int fNTimeBins;

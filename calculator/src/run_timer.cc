@@ -32,6 +32,12 @@ int main(int argc, char *argv[])
   
   ConfigParam conf=ReadConfig(configName);
 
+  //шапка программы:
+  std::cout<<"#######################################################"<<std::endl;
+  std::cout<<"# Программа для расчета МПИ пульсаров run_timer v 2.0 #"<<std::endl;
+  std::cout<<"# ПРАО АКЦ ФИАН                                  2018 #"<<std::endl;
+  std::cout<<"#######################################################"<<std::endl;
+
   // создаем контейнер для данных сеанса
   BaseRun br;
   //loop over files

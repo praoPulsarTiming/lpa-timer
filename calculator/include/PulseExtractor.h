@@ -88,7 +88,7 @@ class PulseExtractor : BaseRun
   SignalContainer fCompensatedSignalSum;
   std::vector<SignalContainer> fDynamicSpectrum;
   SumProfile fSumProfile;
-  int normToUnity();
+  int normToUnity(SignalContainer* h);
   int compensateDM();
   int sumPeriods();
   int sumPerChannelPeriods();

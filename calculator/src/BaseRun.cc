@@ -185,16 +185,15 @@ int BaseRun::ReadRAWData(std::string runID, std::string rawdata_dir, std::string
       
 
       /////////////////////////////
-      //read cumchan
+      //read sumchan
       if (k==8) {
 	std::string buf;
 	for (int ibuf=13; ibuf<15; ibuf++){
 	  buf+=buffer[ibuf];
 	}
-	bool ff=true;
-	if (buf=="ye") ff=true;
-	else if (buf=="no") ff=false;
-	fSumchan=(int)ff;
+	if (buf=="ye") fSumchan=1;
+	else if (buf=="no") fSumchan=0;
+	else if (buf=="ad") fSumchan=2;
 	//	std::cout<<"fSumchan: "<<fSumchan<<std::endl;
       }
 	/////////////////////////////

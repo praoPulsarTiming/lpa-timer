@@ -57,7 +57,7 @@ void Cor::ccf(SumProfile finPulse, std::string rawdata_dir, std::string output_d
         maxi=i;
       };
   
-  for (int i=0; i<5; i++) kkf.kk.push_back(kkf.kkfdata[maxi-2+i]);
+ for (int i=0; i<5; i++) kkf.kk.push_back(kkf.kkfdata[maxi-2+i]);
   
   // std::cout << "$$$$$$$$$$$$$$$$ ККФ возле максимума успешно вычислена" << std::endl; //test
   
@@ -329,21 +329,34 @@ std::vector<float> Cor::dccf(Tpl tpl, SumProfile prf)
   
 {
   Cor cor;
-  int ntpl = tpl.numpoint;         // число точек в шаблоне
-  const int np = prf.numpointwin;   // число точек в профиле     
-  std::vector<float> d;            // дискретная ккф
+  int ntpl = tpl.numpoint;          // число точек в шаблоне
+  const int np = prf.numpointwin;   // число точек в профиле
+  const float tau = prf.tau;        // шаг оцифровки в профиле
+  const float period = prf.period;  // период накопления профилей
+  std::vector<float> d;             // дискретная ккф
   const int kkflen = np;                     // длина массива ККФ по умолчанию если массив профиля > массива шаблона = длине профиля
   float min,max;
-   std::vector<float> kkfarr=std::vector<float>(kkflen,0);            // массив для корреляции 
+  std::vector<float> kkfarr=std::vector<float>(kkflen,0);            // массив для корреляции 
   float swap;
   std::vector<float> pr=std::vector<float>(np,0);                   // временный массив с профилем
   
-  
   for (int i=0; i<kkflen; i++) kkfarr[i]=0; // инициализация массивов
-  for (int i=0; i<np; i++) pr[i]=prf.prfdata[i]; 
+  for (int i=0; i<np; i++) pr[i]=prf.prfdata[i] ; 
   
   pr[np-1]=pr[np-2]; // устранение вероятного '0' в последней точке профиля
+
+  float dead_time = period - tau*np;
+  int dead_time_bins=floor(dead_time/tau);
     
+  for (int i=0; i<kkflen; i++){
+    for (int j=0; j<ntpl; j++) {
+      // вычисление ккф
+      if (i+j<np) kkfarr[i]+=tpl.tpldata[j]*pr[i+j]/ntpl; //внутри профиля 
+      if (i+j>=np&&(i+j)*tau<period) kkfarr[i]+=tpl.tpldata[j]*(pr[np-1]+(i+j-np+1)*(pr[0]-pr[np-1])/dead_time_bins)/ntpl; // интерполяция между периодами
+      if ((i+j)*tau>=period) kkfarr[i]+=tpl.tpldata[j]*pr[floor(((i+j)*tau-period)/tau)]/ntpl; // циклический сдвиг new id=floor(((i+j)*tau-period)/tau)
+    }
+  }
+  /*
   for (int i=0; i<kkflen; i++)    // расчет ККФ 
     {          
       for (int j=0; j<ntpl; j++) kkfarr[i]=kkfarr[i]+tpl.tpldata[j]*pr[j]/ntpl; // расчет ккф
@@ -351,7 +364,7 @@ std::vector<float> Cor::dccf(Tpl tpl, SumProfile prf)
       for (int k=0; k<kkflen-1; k++) pr[k]=pr[k+1]; 
       pr[kkflen-1]=swap;
     };
-  
+  */
   max=kkfarr[0];
   min=max;
   for (int i=0; i<kkflen; i++)
@@ -363,8 +376,6 @@ std::vector<float> Cor::dccf(Tpl tpl, SumProfile prf)
   for (int i=0; i<kkflen; i++) d.push_back(kkfarr[i]);              // возврат значения в вектор
   return d;
 }; 
-
-
 
 
 
